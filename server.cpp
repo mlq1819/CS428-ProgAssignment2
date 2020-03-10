@@ -29,13 +29,13 @@ using namespace std;
 
 void receive_data(int client){
 	if(client==1){
-		valreadX = read(cliXfd, bufferX, BUFF_SIZE);
+		valreadX = read(cliXfd, bufferXp, BUFF_SIZE);
 		gettimeofday(&timeX, NULL);
-		cout << bufferX << endl;
+		cout << bufferXp << endl;
 	} else {
-		valreadY = read(cliYfd, bufferY, BUFF_SIZE);
+		valreadY = read(cliYfd, bufferYp, BUFF_SIZE);
 		gettimeofday(&timeY, NULL);
-		cout << bufferY << endl;
+		cout << bufferYp << endl;
 	}
 }
 
