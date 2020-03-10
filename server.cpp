@@ -9,6 +9,7 @@
 #include <time.h> 
 #include <sys/types.h> 
 #include <sys/socket.h> 
+#include <sys/time.h>
 #include <arpa/inet.h> 
 #include <netinet/in.h> 
 #include <thread>
@@ -16,45 +17,50 @@
 #include <vector>
 
 #define PORT	 12000
-#define MAX_BACKLOG 12
+#define MAX_BACKLOG 3
+#define BUFF_SIZE 1024
 
+int sockfd, cliXfd, cliYfd, valreadX, valreadY;
+char bufferX[BUFF_SIZE];
+char bufferY[BUFF_SIZE];
+struct timeval timeX, timeY;
 
 using namespace std;
 
-vector<thread> threads;
-
-void signalHandler( int signum ){
-	while(threads.size()>0){
-		cout << "Waiting on thread " << threads.size()+1 << "..." << endl;
-		threads.end().join();
-		cout << "Thread " << threads.size()+1 << " ended" << endl;
-		threads.pop_back();
+void receive_data(int client){
+	int * fd, valread;
+	char * buffer;
+	struct * timeval time;
+	if(client==1){
+		fd=&cliXfd;
+		valread=&valreadX;
+		buffer=bufferX;
+		time = &timeX;
+	} else {
+		fd=&cliYfd;
+		valread=&valreadY;
+		buffer=bufferY;
+		time = &timeY;
 	}
-	exit(signum);
+	(*valread) = read(fd*, buffer, BUFF_SIZE);
+	gettimeofday(time, NULL);
+	cout << buffer << endl;
 }
 
 int main() { 
-	int sockfd, n;
 	socklen_t len;
-	char buffer[1024];
-	struct sockaddr_in servaddr; // cliaddr; //might not be relevant for TCP connections
-	threads = vector<thread>();
-	signal(SIGINT, signalHandler); //sets up a handler for if the program is forcibly closed
+	bufferX = {0};
+	bufferY = {0};
+	struct sockaddr_in servaddr, clientX, clientY;
+	socklen_t cXsize, cYsize;
 	
 	// Create a TCP socket
 	// Notice the use of SOCK_STREAM for TCP connections
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	
 	memset(&servaddr, 0, sizeof(servaddr)); 
-	//memset(&cliaddr, 0, sizeof(cliaddr));  //likely unnecessary here
-	
-	/*if(setsockopt(sockfd, )<0){ //might be relevant later for manipulating server options
-		cout << "Failed to initialize socket options" << endl;
-		return 1;
-	}*/
-	
-	
-	
+	memset(&clientX, 0, sizeof(clientX));
+	memset(&clientY, 0, sizeof(clientY));
 	
 	// Fill server information 
 	servaddr.sin_family = AF_INET; // IPv4 
@@ -64,27 +70,39 @@ int main() {
 	// Bind the socket with the server address 
 	bind(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr));
 	
-	std::cout << "\nserver> Running on Port " << servaddr.sin_port << "\n" << std::endl;
+	cout << "\nserver> Running on Port " << servaddr.sin_port << "\n" << endl;
 	
+	if(listen(sockfd, MAX_BACKLOG)<0){ //listen for a client
+		cout << "Failed to connect to client 1" << endl;
+		return 1;
+	}
+	cliXfd = accept(sockfd, clientX, &cXsize);
+	if(listen(sockfd, MAX_BACKLOG)<0){ //listen for a client
+		cout << "Failed to connect to client 2" << endl;
+		return 1;
+	}
+	cliYfd = accept(sockfd, clientY, &cYsize);
+	close(sockfd);
 	
+	//receive client information
+	thread tX(receive_data, 1);
+	thread tY(receive_data, 2);
+	tX.join();
+	tY.join();
 	
-	/*
-	// random generator
-	srand(time(0));
-
-        while (1) {
-		//Receive the client packet along with the address it is coming from
-		n = recvfrom(sockfd, (char *)buffer, sizeof(buffer), 
-			MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len);
-		buffer[n] = '\0';
-
-		//If a random number in the range of 0 to 10 is less than 4,
-		//we consider the packet lost and do not respond
-		if (rand()%10 < 4) continue;
-
-		//Otherwise, the server responds
-		sendto(sockfd, (const char *)buffer, strlen(buffer), 
-			MSG_CONFIRM, (const struct sockaddr *) &cliaddr, len);
-	}*/
+	//manipulate received information
+	string ack;
+	if(timercmp(timeX, timeY, <)){
+		ack = string(bufferX) << " received before " << string(bufferY);
+	} else if(timercmp(timeX, timeY, >)){
+		ack = string(bufferY) << " received before " << string(bufferX);
+	} else {
+		ack = string(bufferX) << " received simultaneously with " << string(bufferY);
+	}
+	send(cliXfd, ack , strlen(ack), 0); 
+	send(cliYfd, ack , strlen(ack), 0);
+	cout << "Sent acknowledgment to both X and Y" << endl;
+	close(cliXfd);
+	close(cliYfd);
 	return 0; 
 } 
