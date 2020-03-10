@@ -21,8 +21,8 @@
 #define BUFF_SIZE 1024
 
 int sockfd, cliXfd, cliYfd, valreadX, valreadY;
-char bufferX[BUFF_SIZE];
-char bufferY[BUFF_SIZE];
+char * bufferXp;
+char * bufferYp;
 struct timeval timeX, timeY;
 
 using namespace std;
@@ -41,8 +41,11 @@ void receive_data(int client){
 
 int main() { 
 	socklen_t len;
-	bufferX = {0};
-	bufferY = {0};
+	
+	char bufferX[BUFF_SIZE] = {0};
+	char bufferY[BUFF_SIZE] = {0};
+	bufferXp=bufferX;
+	bufferYp=bufferY;
 	struct sockaddr_in servaddr, clientX, clientY;
 	socklen_t cXsize, cYsize;
 	
