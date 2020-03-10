@@ -30,11 +30,11 @@ using namespace std;
 void receive_data(int client){
 	if(client==1){
 		valreadX = read(cliXfd, bufferXp, BUFF_SIZE);
-		gettimeofday(&timeX, NULL);
+		gettimeofday(timeX, NULL);
 		cout << bufferXp << endl;
 	} else {
 		valreadY = read(cliYfd, bufferYp, BUFF_SIZE);
-		gettimeofday(&timeY, NULL);
+		gettimeofday(timeY, NULL);
 		cout << bufferYp << endl;
 	}
 }
@@ -71,12 +71,12 @@ int main() {
 		cout << "Failed to connect to client 1" << endl;
 		return 1;
 	}
-	cliXfd = accept(sockfd, clientX, &cXsize);
+	cliXfd = accept(sockfd, &clientX, &cXsize);
 	if(listen(sockfd, MAX_BACKLOG)<0){ //listen for a client
 		cout << "Failed to connect to client 2" << endl;
 		return 1;
 	}
-	cliYfd = accept(sockfd, clientY, &cYsize);
+	cliYfd = accept(sockfd, &clientY, &cYsize);
 	close(sockfd);
 	
 	//receive client information
