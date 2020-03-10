@@ -30,7 +30,7 @@ int main() {
 	int sockfd;
 	char buffer[BUFF_SIZE] = {0};
 	int valready;
-	struct sockaddr_in servaddr;
+	struct sockaddr servaddr;
 	
 	// Create a TCP socket
 	// Notice the use of SOCK_STREAM for TCP connections
