@@ -28,16 +28,21 @@ struct timeval timeX, timeY;
 
 using namespace std;
 
+void signalHandler(int signum){
+	cout << "\nserver> Interrupt signal (" << signum << ") received" << endl;
+	exit(signum);
+}
+
 void receiveX(){ //receives data from X
 	valreadX = read(cliXfd, bufferXp, BUFF_SIZE);
 	gettimeofday(&timeX, NULL);
-	cout << bufferXp << endl;
+	cout << "\nserver> " << bufferXp << endl;
 }
 
 void receiveY(){ //receives data from Y
 	valreadY = read(cliYfd, bufferYp, BUFF_SIZE);
 	gettimeofday(&timeY, NULL);
-	cout << bufferYp << endl;
+	cout << "\nserver> " << bufferYp << endl;
 }
 
 int main() { 
@@ -48,6 +53,8 @@ int main() {
 	struct sockaddr_in servaddr;
 	struct sockaddr clientX, clientY;
 	socklen_t cXsize, cYsize;
+	
+	signal(SIGINT, signalHandler); //Sets up kill handler; just allows user to see when server closes
 	
 	// Create a TCP socket
 	// Notice the use of SOCK_STREAM for TCP connections
@@ -96,7 +103,7 @@ int main() {
 	}
 	send(cliXfd, ack.c_str(), strlen(ack.c_str()), 0); 
 	send(cliYfd, ack.c_str(), strlen(ack.c_str()), 0);
-	cout << "Sent acknowledgment to both X and Y" << endl;
+	cout << "\nserver> Sent acknowledgment to both X and Y" << endl;
 	close(cliXfd);
 	close(cliYfd);
 	return 0; 
