@@ -28,23 +28,15 @@ struct timeval timeX, timeY;
 using namespace std;
 
 void receive_data(int client){
-	int * fd, valread;
-	char * buffer;
-	struct * timeval time;
 	if(client==1){
-		fd=&cliXfd;
-		valread=&valreadX;
-		buffer=bufferX;
-		time = &timeX;
+		valreadX = read(cliXfd, bufferX, BUFF_SIZE);
+		gettimeofday(&timeX, NULL);
+		cout << bufferX << endl;
 	} else {
-		fd=&cliYfd;
-		valread=&valreadY;
-		buffer=bufferY;
-		time = &timeY;
+		valreadY = read(cliYfd, bufferY, BUFF_SIZE);
+		gettimeofday(&timeY, NULL);
+		cout << bufferY << endl;
 	}
-	(*valread) = read(fd*, buffer, BUFF_SIZE);
-	gettimeofday(time, NULL);
-	cout << buffer << endl;
 }
 
 int main() { 
