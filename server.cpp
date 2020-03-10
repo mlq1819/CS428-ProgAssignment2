@@ -93,8 +93,8 @@ int main() {
 	} else {
 		ack = string(bufferX) + " received simultaneously with " + string(bufferY);
 	}
-	send(cliXfd, ack, ack.length, 0); 
-	send(cliYfd, ack, ack.length, 0);
+	send(cliXfd, ack, ack.length(), 0); 
+	send(cliYfd, ack, ack.length(), 0);
 	cout << "Sent acknowledgment to both X and Y" << endl;
 	close(cliXfd);
 	close(cliYfd);
