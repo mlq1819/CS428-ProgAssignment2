@@ -88,7 +88,7 @@ int main() {
 	cliYfd = accept(sockfd, &clientY, &cYsize);
 	close(sockfd);
 	
-	receive client information
+	//receive client information
 	thread tX(receiveX);
 	thread tY(receiveY);
 	tX.join();
