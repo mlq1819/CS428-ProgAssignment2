@@ -5,7 +5,7 @@ CFLAGS= -g -Wall
 all: $(S) $(P)
 
 $(S): $(S).cpp
-	g++ $(CFLAGS) -o $(S).exe $(S).cpp
+	g++ $(CFLAGS) -pthread -o $(S).exe $(S).cpp
 	
 $(P): $(P).cpp
 	g++ $(CFLAGS) -o $(P).exe $(P).cpp
