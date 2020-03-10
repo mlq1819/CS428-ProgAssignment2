@@ -40,8 +40,6 @@ void receive_data(int client){
 }
 
 int main() { 
-	socklen_t len;
-	
 	char bufferX[BUFF_SIZE] = {0};
 	char bufferY[BUFF_SIZE] = {0};
 	bufferXp=bufferX;
@@ -95,8 +93,8 @@ int main() {
 	} else {
 		ack = string(bufferX) + " received simultaneously with " + string(bufferY);
 	}
-	send(cliXfd, ack , strlen(ack), 0); 
-	send(cliYfd, ack , strlen(ack), 0);
+	send(cliXfd, ack, ack.length, 0); 
+	send(cliYfd, ack, ack.length, 0);
 	cout << "Sent acknowledgment to both X and Y" << endl;
 	close(cliXfd);
 	close(cliYfd);
