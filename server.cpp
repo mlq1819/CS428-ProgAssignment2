@@ -89,11 +89,11 @@ int main() {
 	//manipulate received information
 	string ack;
 	if(timercmp(&timeX, &timeY, <)){
-		ack = string(bufferX) << " received before " << string(bufferY);
+		ack = string(bufferX) + " received before " + string(bufferY);
 	} else if(timercmp(&timeX, &timeY, >)){
-		ack = string(bufferY) << " received before " << string(bufferX);
+		ack = string(bufferY) + " received before " + string(bufferX);
 	} else {
-		ack = string(bufferX) << " received simultaneously with " << string(bufferY);
+		ack = string(bufferX) + " received simultaneously with " + string(bufferY);
 	}
 	send(cliXfd, ack , strlen(ack), 0); 
 	send(cliYfd, ack , strlen(ack), 0);
