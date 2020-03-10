@@ -54,6 +54,7 @@ int main() {
 		cout << p_head << "Failed to connect to the server" << endl;
 		return 1;
 	}
+	cout << p_head << "Successfully connected to server" << endl;
 	
 	//Sends a message to the server
 	send(sockfd, client_message.c_str(), strlen(client_message.c_str()), 0);
