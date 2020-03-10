@@ -26,10 +26,16 @@ using namespace std;
 string p_head = "\nclient> ";
 string client_message = "Client X: Alice";
 
+void signalHandler(int signum){
+	cout << p_head << "Interrupt signal (" << signum << ") received" << endl;
+	exit(signum);
+}
+
 int main() { 
 	int sockfd;
 	char buffer[BUFF_SIZE] = {0};
 	struct sockaddr_in servaddr;
+	signal(SIGINT, signalHandler); //Sets up kill handler; just allows user to see when client closes
 	
 	// Create a TCP socket
 	// Notice the use of SOCK_STREAM for TCP connections
