@@ -46,7 +46,8 @@ int main() {
 	char bufferY[BUFF_SIZE] = {0};
 	bufferXp=bufferX;
 	bufferYp=bufferY;
-	struct sockaddr_in servaddr, clientX, clientY;
+	struct sockaddr_in servaddr;
+	struct sockaddr clientX, clientY;
 	socklen_t cXsize, cYsize;
 	
 	// Create a TCP socket
@@ -87,9 +88,9 @@ int main() {
 	
 	//manipulate received information
 	string ack;
-	if(timercmp(timeX, timeY, <)){
+	if(timercmp(&timeX, &timeY, <)){
 		ack = string(bufferX) << " received before " << string(bufferY);
-	} else if(timercmp(timeX, timeY, >)){
+	} else if(timercmp(&timeX, &timeY, >)){
 		ack = string(bufferY) << " received before " << string(bufferX);
 	} else {
 		ack = string(bufferX) << " received simultaneously with " << string(bufferY);
