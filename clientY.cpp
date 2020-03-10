@@ -1,4 +1,4 @@
-// TCP Client
+// TCP Client Y
 
 // Must have the TCP  Server running before you can run this client
 
@@ -24,7 +24,7 @@
 using namespace std;
 
 string p_head = "\nclient> ";
-string client_message = "Client X: Alice";
+string client_message = "Client Y: Bob";
 
 void signalHandler(int signum){
 	cout << p_head << "Interrupt signal (" << signum << ") received" << endl;
