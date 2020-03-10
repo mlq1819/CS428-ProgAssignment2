@@ -81,11 +81,11 @@ int main() {
 		return 1;
 	}
 	cliXfd = accept(sockfd, &clientX, &cXsize);
-	if(listen(sockfd, MAX_BACKLOG)<0){ //listen for a client
+	/*if(listen(sockfd, MAX_BACKLOG)<0){ //listen for a client
 		cout << p_head << "Failed to connect to client 2" << endl;
 		return 1;
 	}
-	cliYfd = accept(sockfd, &clientY, &cYsize);
+	cliYfd = accept(sockfd, &clientY, &cYsize);*/
 	close(sockfd);
 	
 	//receive client information
