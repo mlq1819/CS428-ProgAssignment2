@@ -1,6 +1,6 @@
-// UDP Pinger
+// TCP Server
 
-// Must have this server running before you can run the UDP Pinger Client code
+// Must have this server running before you can run the TCP Client code
 
 #include <iostream>
 #include <stdlib.h> 
@@ -11,22 +11,50 @@
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
 #include <netinet/in.h> 
+#include <thread>
+#include <csignal>
+#include <vector>
 
 #define PORT	 12000
+#define MAX_BACKLOG 12
 
+
+using namespace std;
+
+vector<thread> threads;
+
+void signalHandler( int signum ){
+	while(threads.size()>0){
+		cout << "Waiting on thread " << threads.size()+1 << "..." << endl;
+		threads.end().join();
+		cout << "Thread " << threads.size()+1 << " ended" << endl;
+		threads.pop_back();
+	}
+	exit(signum);
+}
 
 int main() { 
 	int sockfd, n;
 	socklen_t len;
 	char buffer[1024];
-	struct sockaddr_in servaddr, cliaddr; 
+	struct sockaddr_in servaddr; // cliaddr; //might not be relevant for TCP connections
+	threads = vector<thread>();
+	signal(SIGINT, signalHandler); //sets up a handler for if the program is forcibly closed
 	
-	// Create a UDP socket
-	// Notice the use of SOCK_DGRAM for UDP packets
-	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+	// Create a TCP socket
+	// Notice the use of SOCK_STREAM for TCP connections
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	
 	memset(&servaddr, 0, sizeof(servaddr)); 
-	memset(&cliaddr, 0, sizeof(cliaddr)); 
+	//memset(&cliaddr, 0, sizeof(cliaddr));  //likely unnecessary here
+	
+	/*if(setsockopt(sockfd, )<0){ //might be relevant later for manipulating server options
+		cout << "Failed to initialize socket options" << endl;
+		return 1;
+	}*/
+	
+	
+	
 	
 	// Fill server information 
 	servaddr.sin_family = AF_INET; // IPv4 
@@ -38,6 +66,9 @@ int main() {
 	
 	std::cout << "\nserver> Running on Port " << servaddr.sin_port << "\n" << std::endl;
 	
+	
+	
+	/*
 	// random generator
 	srand(time(0));
 
@@ -54,6 +85,6 @@ int main() {
 		//Otherwise, the server responds
 		sendto(sockfd, (const char *)buffer, strlen(buffer), 
 			MSG_CONFIRM, (const struct sockaddr *) &cliaddr, len);
-	}
+	}*/
 	return 0; 
 } 
