@@ -27,16 +27,16 @@ struct timeval timeX, timeY;
 
 using namespace std;
 
-void receive_data(int client){
-	if(client==1){
-		valreadX = read(cliXfd, bufferXp, BUFF_SIZE);
-		gettimeofday(&timeX, NULL);
-		cout << bufferXp << endl;
-	} else {
-		valreadY = read(cliYfd, bufferYp, BUFF_SIZE);
-		gettimeofday(&timeY, NULL);
-		cout << bufferYp << endl;
-	}
+void receiveX(){ //receives data from X
+	valreadX = read(cliXfd, bufferXp, BUFF_SIZE);
+	gettimeofday(&timeX, NULL);
+	cout << bufferXp << endl;
+}
+
+void receiveY(){ //receives data from Y
+	valreadY = read(cliYfd, bufferYp, BUFF_SIZE);
+	gettimeofday(&timeY, NULL);
+	cout << bufferYp << endl;
 }
 
 int main() { 
@@ -79,8 +79,8 @@ int main() {
 	close(sockfd);
 	
 	//receive client information
-	thread tX(receive_data, 1);
-	thread tY(receive_data, 2);
+	thread tX(receiveX);
+	thread tY(receiveY);
 	tX.join();
 	tY.join();
 	
