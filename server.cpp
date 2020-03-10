@@ -30,11 +30,11 @@ using namespace std;
 void receive_data(int client){
 	if(client==1){
 		valreadX = read(cliXfd, bufferXp, BUFF_SIZE);
-		gettimeofday(timeX, NULL);
+		gettimeofday(&timeX, NULL);
 		cout << bufferXp << endl;
 	} else {
 		valreadY = read(cliYfd, bufferYp, BUFF_SIZE);
-		gettimeofday(timeY, NULL);
+		gettimeofday(&timeY, NULL);
 		cout << bufferYp << endl;
 	}
 }
