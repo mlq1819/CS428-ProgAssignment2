@@ -2,18 +2,18 @@ S=server
 P=client
 CFLAGS= -g -Wall
 
-all: $(S) $(P)
+all: $(S) $(P)X $(P)Y
 
 $(S): $(S).cpp
-	g++ $(CFLAGS) -pthread -o $(S).exe $(S).cpp
+	g++ $(CFLAGS) -pthread -o $(S) $(S).cpp
 	
 $(P)X: $(P)X.cpp
-	g++ $(CFLAGS) -o $(P)X.exe $(P)X.cpp
+	g++ $(CFLAGS) -o $(P)X $(P)X.cpp
 
 $(P)Y: $(P)Y.cpp
-	g++ $(CFLAGS) -o $(P)Y.exe $(P)Y.cpp
+	g++ $(CFLAGS) -o $(P)Y $(P)Y.cpp
 	
 clean:
-	rm -rf $(S).exe
-	rm -rf $(P)X.exe
-	rm -rf $(P)Y.exe
+	rm -rf $(S)
+	rm -rf $(P)X
+	rm -rf $(P)Y
