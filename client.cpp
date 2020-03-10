@@ -43,7 +43,7 @@ int main() {
 	servaddr.sin_port = htons(PORT); // port number
 	
 	//Connects to the server
-	cout << p_head << "Connecting to Port " << servaddr.sin_port << "...\n" << endl;
+	cout << p_head << "Connecting to Port " << servaddr.sin_port << " on sockfd(" << sockfd << ")...\n" << endl;
 	if(connect(sockfd, (struct sockaddr *) &servaddr, sizeof(servaddr))<0){
 		cout << p_head << "Failed to connect to the server" << endl;
 		return 1;

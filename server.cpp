@@ -74,7 +74,7 @@ int main() {
 	// Bind the socket with the server address 
 	bind(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr));
 	
-	cout << p_head << "Running on Port " << servaddr.sin_port << "\n" << endl;
+	cout << p_head << "Running on Port " << servaddr.sin_port << p_head << "Now listening for clients on sockfd(" << sockfd << ")" << endl;
 	
 	if(listen(sockfd, MAX_BACKLOG)<0){ //listen for a client
 		cout << p_head << "Failed to connect to client 1" << endl;
