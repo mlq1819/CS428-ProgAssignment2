@@ -29,7 +29,6 @@ string client_message = "Client X: Alice";
 int main() { 
 	int sockfd;
 	char buffer[BUFF_SIZE] = {0};
-	int valready;
 	struct sockaddr_in servaddr;
 	
 	// Create a TCP socket
@@ -54,7 +53,7 @@ int main() {
 	send(sockfd, client_message.c_str(), strlen(client_message.c_str()), 0);
 	
 	//Receives a message from the server
-	valready = read(sockfd, buffer, BUFF_SIZE);
+	read(sockfd, buffer, BUFF_SIZE);
 	
 	cout << p_head << client_message << endl;
 	cout << p_head << buffer << endl;
