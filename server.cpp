@@ -28,21 +28,23 @@ struct timeval timeX, timeY;
 
 using namespace std;
 
+string p_head = "\nserver> ";
+
 void signalHandler(int signum){
-	cout << "\nserver> Interrupt signal (" << signum << ") received" << endl;
+	cout << p_head << "Interrupt signal (" << signum << ") received" << endl;
 	exit(signum);
 }
 
 void receiveX(){ //receives data from X
 	valreadX = read(cliXfd, bufferXp, BUFF_SIZE);
 	gettimeofday(&timeX, NULL);
-	cout << "\nserver> " << bufferXp << endl;
+	cout << p_head << bufferXp << endl;
 }
 
 void receiveY(){ //receives data from Y
 	valreadY = read(cliYfd, bufferYp, BUFF_SIZE);
 	gettimeofday(&timeY, NULL);
-	cout << "\nserver> " << bufferYp << endl;
+	cout << p_head << bufferYp << endl;
 }
 
 int main() { 
@@ -72,15 +74,15 @@ int main() {
 	// Bind the socket with the server address 
 	bind(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr));
 	
-	cout << "\nserver> Running on Port " << servaddr.sin_port << "\n" << endl;
+	cout << p_head << "Running on Port " << servaddr.sin_port << "\n" << endl;
 	
 	if(listen(sockfd, MAX_BACKLOG)<0){ //listen for a client
-		cout << "Failed to connect to client 1" << endl;
+		cout << p_head << "Failed to connect to client 1" << endl;
 		return 1;
 	}
 	cliXfd = accept(sockfd, &clientX, &cXsize);
 	if(listen(sockfd, MAX_BACKLOG)<0){ //listen for a client
-		cout << "Failed to connect to client 2" << endl;
+		cout << p_head << "Failed to connect to client 2" << endl;
 		return 1;
 	}
 	cliYfd = accept(sockfd, &clientY, &cYsize);
@@ -103,7 +105,7 @@ int main() {
 	}
 	send(cliXfd, ack.c_str(), strlen(ack.c_str()), 0); 
 	send(cliYfd, ack.c_str(), strlen(ack.c_str()), 0);
-	cout << "\nserver> Sent acknowledgment to both X and Y" << endl;
+	cout << p_head << "Sent acknowledgment to both X and Y" << endl;
 	close(cliXfd);
 	close(cliYfd);
 	return 0; 

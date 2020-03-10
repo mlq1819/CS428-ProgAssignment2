@@ -1,31 +1,40 @@
-// UDP Client
+// TCP Client
 
-// Must have the UDP Pinger Server running before you can run this client
+// Must have the TCP  Server running before you can run this client
 
 #include <iostream>
 #include <stdlib.h> 
 #include <unistd.h> 
 #include <string.h> 
-#include <time.h>
-#include <sys/time.h>
+#include <time.h> 
 #include <sys/types.h> 
 #include <sys/socket.h> 
+#include <sys/time.h>
 #include <arpa/inet.h> 
 #include <netinet/in.h> 
+#include <thread>
+#include <csignal>
+#include <vector>
+#include <pthread.h>
 
 #define PORT	 12000
-#define ATTEMPTS 10
+#define MAX_BACKLOG 3
+#define BUFF_SIZE 1024
+
+using namespace std;
+
+string p_head = "\nclient> ";
+string client_message = "Client X: Alice";
 
 int main() { 
-	int sockfd, n;
-	socklen_t len;
-	char buffer[1024];
-	struct sockaddr_in servaddr; 
-	struct timeval timeout;
-	timeout.tv_sec = 1;
-	timeout.tv_usec = 0;
+	int sockfd;
+	char buffer[BUFF_SIZE] = {0};
+	int valready;
+	struct sockaddr_in servaddr;
 	
-	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+	// Create a TCP socket
+	// Notice the use of SOCK_STREAM for TCP connections
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	
 	memset(&servaddr, 0, sizeof(servaddr)); 
 	
@@ -33,29 +42,22 @@ int main() {
 	servaddr.sin_family = AF_INET; // IPv4 
 	servaddr.sin_addr.s_addr = INADDR_ANY; // localhost
 	servaddr.sin_port = htons(PORT); // port number
-		
-	struct timeval start, end;
-	if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO,&timeout,sizeof(timeout)) < 0) {
-		perror("Error");
+	
+	//Connects to the server
+	cout << p_head << "Connecting to Port " << servaddr.sin_port << "...\n" << endl;
+	if(connect(sockfd, &servaddr, sizeof(servaddr))<0){
+		cout << p_head << "Failed to connect to the server" << endl;
+		return 1;
 	}
 	
+	//Sends a message to the server
+	send(sockfd, client_message.c_str(), strlen(client_message.c_str()), 0);
 	
-	std::cout << "\nclient> Sending to Port " << servaddr.sin_port << "\n" << std::endl;
+	//Receives a message from the server
+	valready = read(sockfd, buffer, BUFF_SIZE);
 	
-	for(int i=0; i<ATTEMPTS; i++){
-		
-		gettimeofday(&start, NULL); //start timer to get RTT
-		sendto(sockfd, (const char *)buffer, strlen(buffer), MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr));//The client sends a message to the server
-			
-		n = recvfrom(sockfd, (char *)buffer, sizeof(buffer), 0, ( struct sockaddr *) &servaddr, &len); //Receive the server ping
-		gettimeofday(&end, NULL); //stop timer to get RTT
-		if(n<0){ //n returns -1 if it times out; this checks if it times out
-			std::cout << "packet lost..." << std::endl;
-			continue;
-		}
-		buffer[n] = '\0';
-		long rtt = (end.tv_usec-start.tv_usec); //calculate the RTT from the start and end of the timer
-		std::cout << rtt << " milliseconds" << std::endl;
-	}
+	cout << p_head << client_message << endl;
+	cout << p_head << buffer << endl;
+	close(sockfd);
 	return 0;
 }
