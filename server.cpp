@@ -89,11 +89,10 @@ int main() {
 	close(sockfd);
 	
 	//receive client information
-	/*thread tX(receiveX);
-	thread tY(receiveY);
+	thread tX(receiveX);
+	//thread tY(receiveY);
 	tX.join();
-	tY.join();*/
-	receiveX();
+	//tY.join();
 	
 	//manipulate received information
 	string ack;
