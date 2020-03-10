@@ -23,7 +23,7 @@
 
 using namespace std;
 
-string p_head = "\nclient> ";
+string p_head = "\nY> ";
 string client_message = "Client Y: Bob";
 
 void signalHandler(int signum){
