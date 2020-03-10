@@ -15,6 +15,7 @@
 #include <thread>
 #include <csignal>
 #include <vector>
+#include <pthread.h>
 
 #define PORT	 12000
 #define MAX_BACKLOG 3
